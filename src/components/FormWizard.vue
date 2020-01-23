@@ -1,6 +1,11 @@
 <template>
-  <div :id="id ? id : ''" class="vue-form-wizard" :class="[stepSize, {vertical: isVertical}]" @keyup.right="focusNextTab"
-       @keyup.left="focusPrevTab">
+  <div
+    :id="id ? id : ''"
+    class="vue-form-wizard"
+    :class="[stepSize, {vertical: isVertical}]"
+    @keyup.right="focusNextTab"
+    @keyup.left="focusPrevTab"
+  >
     <div class="wizard-header" v-if="$slots['title']">
       <slot name="title">
         <h4 class="wizard-title">{{title}}</h4>
@@ -9,41 +14,45 @@
     </div>
     <div class="wizard-navigation">
       <div class="wizard-progress-with-circle" v-if="!isVertical">
-        <div class="wizard-progress-bar"
-             :style="progressBarStyle"></div>
+        <div class="wizard-progress-bar" :style="progressBarStyle"></div>
       </div>
       <ul class="wizard-nav wizard-nav-pills" role="tablist" :class="stepsClasses">
-        <slot name="step" v-for="(tab, index) in tabs"
-              :tab="tab"
-              :index="index"
-              :navigate-to-tab="navigateToTab"
-              :step-size="stepSize"
-              :transition="transition">
-          <wizard-step :tab="tab"
-                       :step-size="stepSize"
-                       @click.native="navigateToTab(index)"
-                       @keyup.enter.native="navigateToTab(index)"
-                       :transition="transition"
-                       :index="index">
-          </wizard-step>
+        <slot
+          name="step"
+          v-for="(tab, index) in tabs"
+          :tab="tab"
+          :index="index"
+          :navigate-to-tab="navigateToTab"
+          :step-size="stepSize"
+          :transition="transition"
+        >
+          <wizard-step
+            :tab="tab"
+            :step-size="stepSize"
+            @click.native="navigateToTab(index)"
+            @keyup.enter.native="navigateToTab(index)"
+            :transition="transition"
+            :index="index"
+          ></wizard-step>
         </slot>
       </ul>
       <div class="wizard-tab-content">
-        <slot v-bind="slotProps">
-        </slot>
+        <slot v-bind="slotProps"></slot>
       </div>
     </div>
 
     <div class="wizard-card-footer clearfix" v-if="!hideButtons">
-      <slot name="footer"
-            v-bind="slotProps">
+      <slot name="footer" v-bind="slotProps">
         <div class="wizard-footer-left">
-          <span @click="prevTab" @keyup.enter="prevTab" v-if="displayPrevButton" role="button" tabindex="0">
+          <span
+            @click="prevTab"
+            @keyup.enter="prevTab"
+            v-if="displayPrevButton"
+            role="button"
+            tabindex="0"
+          >
             <slot name="prev" v-bind="slotProps">
-              <wizard-button :style="fillButtonStyle"
-                             :disabled="loading">
-                {{backButtonText}}
-              </wizard-button>
+              <wizard-button :style="fillButtonStyle" :disabled="loading">{{backButtonText}}</wizard-button>
             </slot>
           </span>
           <slot name="custom-buttons-left" v-bind="slotProps"></slot>
@@ -51,23 +60,23 @@
 
         <div class="wizard-footer-right">
           <slot name="custom-buttons-right" v-bind="slotProps"></slot>
-          <span @click="nextTab" @keyup.enter="nextTab" v-if="isLastStep" role="button" tabindex="0">
-              <slot name="finish" v-bind="slotProps">
-               <wizard-button :style="fillButtonStyle">
-                {{finishButtonText}}
-              </wizard-button>
+          <span
+            @click="nextTab"
+            @keyup.enter="nextTab"
+            v-if="isLastStep"
+            role="button"
+            tabindex="0"
+          >
+            <slot name="finish" v-bind="slotProps">
+              <wizard-button :style="fillButtonStyle">{{finishButtonText}}</wizard-button>
             </slot>
           </span>
           <span @click="nextTab" @keyup.enter="nextTab" role="button" tabindex="0" v-else>
-           <slot name="next" v-bind="slotProps">
-             <wizard-button :style="fillButtonStyle"
-                            :disabled="loading">
-              {{nextButtonText}}
-             </wizard-button>
-           </slot>
-         </span>
+            <slot name="next" v-bind="slotProps">
+              <wizard-button :style="fillButtonStyle" :disabled="loading">{{nextButtonText}}</wizard-button>
+            </slot>
+          </span>
         </div>
-
       </slot>
     </div>
   </div>
@@ -161,7 +170,14 @@
         validator: (value) => {
           return value >= 0
         }
-      }
+      },
+        /***
+       *
+       * All steps enabled
+       */
+      allActive: {
+        type: Boolean,
+        default: false
     },
     provide () {
       return {
@@ -458,6 +474,7 @@
         } else {
           window.console.warn(`Prop startIndex set to ${this.startIndex} is greater than the number of tabs - ${this.tabs.length}. Make sure that the starting index is less than the number of tabs registered`)
         }
+        if(this.allActive) this.activateAll()
       }
     },
     mounted () {
@@ -471,5 +488,5 @@
   }
 </script>
 <style lang="scss">
-  @import "./../assets/wizard";
+@import "./../assets/wizard";
 </style>
